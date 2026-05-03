@@ -18,7 +18,7 @@
     "dev": "concurrently \"pnpm electron-vite dev\" \"pnpm:devClientViewer\"",
     "devClientViewer": "cd src/client-viewer && pnpm dev --host --port=5174",
     "buildDev": "npm run buildClientViewer && electron-vite build",
-    "build": "npm run typecheck && npm run buildClientViewer && electron-vite build",
+    "build": "npm run typecheck && npm run buildClientViewer && electron-vite build && node -e \"const fs=require('fs'); fs.mkdirSync('out/client-viewer', {recursive: true}); fs.copyFileSync('src/client-viewer/package.json', 'out/client-viewer/package.json');\"",
     "buildClientViewer": "cd src/client-viewer && pnpm build",
     "postinstall": "electron-builder install-app-deps",
     "build:unpack": "npm run build && electron-builder --dir",
