@@ -12,8 +12,7 @@ import fs from 'fs-extra';
 // Custom Vite plugin to copy the 'client-viewer/dist' directory
 const copyClientViewerStaticFiles = () => {
 	return {
-		name: 'copy-client-viewer-static-files', // A unique name for your plugin
-		// The 'writeBundle' hook runs after the bundles have been written to disk
+		name: 'copy-client-viewer-static-files',
 		async writeBundle() {
 			const sourceDir = resolve(__dirname, 'src/client-viewer/dist');
 			const destDir = resolve(__dirname, 'out/client-viewer');
@@ -22,12 +21,15 @@ const copyClientViewerStaticFiles = () => {
 			console.log(`To destination: ${destDir}`);
 
 			try {
-				// Ensure the destination directory exists and is empty before copying
 				await fs.emptyDir(destDir);
-				// Copy the entire contents of the source directory to the destination
 				await fs.copy(sourceDir, destDir);
+                
+				// 👇 新增下面这两行：确保构建完成时，package.json 被放入正确的目录
+				const pkgSrc = resolve(__dirname, 'src/client-viewer/package.json');
+				await fs.copy(pkgSrc, resolve(destDir, 'package.json'));
+                
 				console.log(
-					'Successfully copied client-viewer/dist to out/client-viewer',
+					'Successfully copied client-viewer/dist and package.json to out/client-viewer',
 				);
 			} catch (err) {
 				console.error(`Error copying static files: ${err}`);
